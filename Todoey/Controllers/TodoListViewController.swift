@@ -17,8 +17,9 @@ class TodoListViewController: UITableViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    //var itemArray = ["Find Mike","Buy Eggos", "Destroy Demogogon"]
+//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+//    //var itemArray = ["Find Mike","Buy Eggos", "Destroy Demogogon"]
     //var itemArray2 = [Item(key: "Find Mike", check: false),Item(key: "Buy Eggos", check: false) , Item(key: "Destroy Demogogon", check: false)]
     
     //let defaults = UserDefaults.standard
@@ -28,7 +29,7 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         
         
-        
+    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         //print(dataFilePath)
         
 //        let newItem = Item()
@@ -197,6 +198,27 @@ class TodoListViewController: UITableViewController {
         
     }
     
+        func loadItems() {
+            if let data = try? Data(contentsOf: dataFilePath!){
+                let decoder = PropertyListDecoder()
+                do {
+                    itemArray = try decoder.decode([Item].self, from: data)
+                } catch {
+                    print("Error decoding item array, \(error)")
+                }
+    
+            }
+        }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
 //    func loadItems() {
 //        if let data = try? Data(contentsOf: dataFilePath!){
 //            let decoder = PropertyListDecoder()
@@ -208,8 +230,8 @@ class TodoListViewController: UITableViewController {
 //
 //        }
 //    }
-//
-//
+
+
     
     
     }
