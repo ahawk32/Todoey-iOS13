@@ -44,6 +44,8 @@ class TodoListViewController: UITableViewController {
 //        newItem3.title = "Destroy Demogogon"
 //        itemArray.append(newItem3)
 //
+//        searchBar.delegate = self
+        
         
         
        loadItems()
@@ -105,11 +107,11 @@ class TodoListViewController: UITableViewController {
         
         //itemArray[indexPath.row].setValue("Completed", forKey: "title")
         
-        //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         
-        context.delete(itemArray[indexPath.row])
-        itemArray.remove(at: indexPath.row)
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
         
         saveItems()
         
@@ -240,6 +242,34 @@ class TodoListViewController: UITableViewController {
     
     
     }
+
+//MARK: - Search bar methods
+extension TodoListViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        //print(searchBar.text!)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        request.predicate = predicate
+        
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        request.sortDescriptors = [sortDescriptor]
+        
+        
+        do {
+          itemArray =  try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
+        }
+        
+        tableView.reloadData()
+        
+        
+    }
+    
+}
     
     
 //    override func tableView(_ tableView: UITableView,
