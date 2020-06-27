@@ -46,7 +46,7 @@ class TodoListViewController: UITableViewController {
 //
         
         
-       // loadItems()
+       loadItems()
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
 //        }
@@ -102,7 +102,14 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView,
                             didSelectRowAt indexPath: IndexPath){
         
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        //itemArray[indexPath.row].setValue("Completed", forKey: "title")
+        
+        //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
         
         saveItems()
         
@@ -199,15 +206,13 @@ class TodoListViewController: UITableViewController {
     }
     
         func loadItems() {
-            if let data = try? Data(contentsOf: dataFilePath!){
-                let decoder = PropertyListDecoder()
-                do {
-                    itemArray = try decoder.decode([Item].self, from: data)
-                } catch {
-                    print("Error decoding item array, \(error)")
-                }
-    
+            let request : NSFetchRequest<Item> = Item.fetchRequest()
+            do {
+              itemArray =  try context.fetch(request)
+            } catch {
+                print("Error fetching data from context \(error)")
             }
+            
         }
 
     
