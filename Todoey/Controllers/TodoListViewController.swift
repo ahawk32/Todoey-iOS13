@@ -249,9 +249,9 @@ extension TodoListViewController: UISearchBarDelegate{
         let request : NSFetchRequest<Item> = Item.fetchRequest()
         
         //print(searchBar.text!)
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
-        request.predicate = predicate
+        //request.predicate = predicate
         
         let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         
