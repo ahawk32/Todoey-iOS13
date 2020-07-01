@@ -14,6 +14,12 @@ class TodoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
+    var selectedCategory : Category?{
+        didSet{
+            loadItems()
+        }
+    }
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     
@@ -47,16 +53,18 @@ class TodoListViewController: UITableViewController {
 //        searchBar.delegate = self
         
         
+        //let request : NSFetchRequest<Item> = Item.fetchRequest()
         
-       loadItems()
+        //loadItems()
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
 //        }
         
         // Do any additional setup after loading the view.
     }
-
-
+    
+//MARK: - TableView Datasource Methods
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
@@ -99,7 +107,7 @@ class TodoListViewController: UITableViewController {
 //
 //    }
     
-  
+  //MARK: - TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView,
                             didSelectRowAt indexPath: IndexPath){
@@ -164,6 +172,8 @@ class TodoListViewController: UITableViewController {
             
             newItem.done = false
             
+            newItem.parentCategory = self.selectedCategory
+            
             self.itemArray.append(newItem)
            // print(nText)
             
@@ -207,14 +217,28 @@ class TodoListViewController: UITableViewController {
         
     }
     
-        func loadItems() {
-            let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+            //let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        if let additionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate!])
+        } else {
+            request.predicate = categoryPredicate
+        }
+//        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, predicate])
+//
+//        request.predicate = compoundPredicate
+//
             do {
               itemArray =  try context.fetch(request)
             } catch {
                 print("Error fetching data from context \(error)")
             }
             
+        tableView.reloadData()
+        
         }
 
     
@@ -249,23 +273,35 @@ extension TodoListViewController: UISearchBarDelegate{
         let request : NSFetchRequest<Item> = Item.fetchRequest()
         
         //print(searchBar.text!)
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         //request.predicate = predicate
         
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        request.sortDescriptors = [sortDescriptor]
+       // request.sortDescriptors = [sortDescriptor]
+        
+        loadItems(with: request, predicate: predicate)
+//        do {
+//          itemArray =  try context.fetch(request)
+//        } catch {
+//            print("Error fetching data from context \(error)")
+//        }
+        
+        //tableView.reloadData()
         
         
-        do {
-          itemArray =  try context.fetch(request)
-        } catch {
-            print("Error fetching data from context \(error)")
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
         }
-        
-        tableView.reloadData()
-        
         
     }
     
