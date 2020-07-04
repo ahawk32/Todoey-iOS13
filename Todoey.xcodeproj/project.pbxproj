@@ -15,6 +15,7 @@
 		EB2BE506239524DC00FB933B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB2BE504239524DC00FB933B /* LaunchScreen.storyboard */; };
 		EC1DB23024AE842C0015A734 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1DB22F24AE842C0015A734 /* Item.swift */; };
 		EC1DB23224AE84510015A734 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1DB23124AE84510015A734 /* Category.swift */; };
+		EC1DB23424B019770015A734 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1DB23324B019770015A734 /* SwipeTableViewController.swift */; };
 		EC840AAB24A6F48C005F3049 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC840AAA24A6F48C005F3049 /* CategoryViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		EB2BE507239524DC00FB933B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC1DB22F24AE842C0015A734 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		EC1DB23124AE84510015A734 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		EC1DB23324B019770015A734 /* SwipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		EC840AAA24A6F48C005F3049 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +101,7 @@
 			children = (
 				EC840AAA24A6F48C005F3049 /* CategoryViewController.swift */,
 				EB2BE4FD239524DB00FB933B /* TodoListViewController.swift */,
+				EC1DB23324B019770015A734 /* SwipeTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				EC840AAB24A6F48C005F3049 /* CategoryViewController.swift in Sources */,
 				EB2BE4FE239524DB00FB933B /* TodoListViewController.swift in Sources */,
 				EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */,
+				EC1DB23424B019770015A734 /* SwipeTableViewController.swift in Sources */,
 				EC1DB23224AE84510015A734 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
