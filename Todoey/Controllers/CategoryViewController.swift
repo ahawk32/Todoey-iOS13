@@ -9,10 +9,10 @@
 import UIKit
 //import CoreData
 import RealmSwift
-import SwipeCellKit
+//import SwipeCellKit
 
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
     
     
     let realm = try! Realm()
@@ -50,29 +50,9 @@ class CategoryViewController: UITableViewController {
         
         override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
             
-            //print("cellforrowatindex path called")
-            //let count = it emArray.count - 1
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
-            cell.delegate = self
-            
-            cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
-            
-            
-            //cell.textLabel?.text = category?.name
-            
-            
-            //cell.accessoryType = item.done == true ? .checkmark : .none
-            
-            
-           // cell.accessoryType = item.done ? .checkmark : .none
-            
-    //        if item.done == true {
-    //            cell.accessoryType = .checkmark
-    //        } else {
-    //            cell.accessoryType = .none
-    //        }
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
             
             
             return cell
@@ -135,6 +115,28 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
         
         }
+    
+    //MARK: - delete data from swipe
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let categoryForDeletion = self.categories?[indexPath.row] {
+            
+            super.updateModel(at: indexPath)
+            
+            do {
+                try self.realm.write{
+                    
+                    //realm.delete(item)
+                    self.realm.delete(categoryForDeletion)
+                    
+                }
+            } catch {
+                print("Error saving done status, \(error)")
+            }
+    }
+    }
+    
+   
     
     
     //MARK: - Add new Categories
