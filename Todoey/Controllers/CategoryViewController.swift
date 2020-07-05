@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import ChameleonFramework
 //import SwipeCellKit
 
 
@@ -30,8 +31,16 @@ class CategoryViewController: SwipeTableViewController {
 
         loadCategories()
         
-        tableView.rowHeight = 80.0
+        tableView.separatorStyle = .none
         
+        
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+         guard let navBar = navigationController?.navigationBar else {fatalError("yurrrrr")}
+        
+        navBar.backgroundColor = UIColor(hexString: "1D9BF6")
     }
 
     
@@ -52,9 +61,18 @@ class CategoryViewController: SwipeTableViewController {
             
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
             
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
-            
-            
+            if let category = categories?[indexPath.row] {
+                cell.textLabel?.text = category.name
+                
+                guard let categoryColor = UIColor(hexString: category.color) else {fatalError()}
+                    
+                cell.backgroundColor = categoryColor
+                    
+                cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+    
+            }
+        
+        
             return cell
             //return UITableView.updateTextAttributes(itemArray[count])
         }
@@ -71,6 +89,7 @@ class CategoryViewController: SwipeTableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.color = categories?[indexPath.row].color
             destinationVC.selectedCategory = categories?[indexPath.row]
         }
         
@@ -158,6 +177,11 @@ class CategoryViewController: SwipeTableViewController {
             
             let newCategory = Category()
             newCategory.name = textField.text!
+            
+            let cValue = UIColor.randomFlat().hexValue()
+            print(cValue)
+            newCategory.color = cValue
+
             
             //newItem.done = false
             

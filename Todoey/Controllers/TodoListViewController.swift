@@ -9,8 +9,9 @@
 import UIKit
 import CoreData
 import RealmSwift
+import ChameleonFramework
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     //cash money jhvghjvjjvhjhvjhvjvgjgvjhvjhvjhvjhvjhvjhvjh
     
@@ -19,6 +20,13 @@ class TodoListViewController: UITableViewController {
     var todoItems : Results<Item>?
     
     let realm = try! Realm()
+    
+    var color: String?
+    
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     
     var selectedCategory : Category?{
         didSet{
@@ -40,8 +48,14 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.separatorStyle = .none
         
-    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        
+        
+        
+        
+//    print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         //print(dataFilePath)
         
 //        let newItem = Item()
@@ -69,6 +83,37 @@ class TodoListViewController: UITableViewController {
         // Do any additional setup after loading the view.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if let colorHex = selectedCategory?.color{
+            
+            
+            title = selectedCategory!.name
+            
+            guard let navBar = navigationController?.navigationBar else {fatalError("yurrrrr")}
+            
+            
+            if let navBarColor = UIColor(hexString: colorHex) {
+                navBar.backgroundColor = navBarColor
+                
+                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+                
+                
+                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+                
+                searchBar.barTintColor = navBarColor
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+    }
+    
+    
 //MARK: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -81,17 +126,25 @@ class TodoListViewController: UITableViewController {
         //print("cellforrowatindex path called")
         //let count = it emArray.count - 1
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = todoItems?[indexPath.row]{
         
-        cell.textLabel?.text = item.title
-        
-        
+            cell.textLabel?.text = item.title
+            
+            if let color = UIColor(hexString: color!)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)){
+                
+                cell.backgroundColor = color
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+                
+            }
+            
+            
         //cell.accessoryType = item.done == true ? .checkmark : .none
         
         
-        cell.accessoryType = item.done ? .checkmark : .none
+            cell.accessoryType = item.done ? .checkmark : .none
             
         } else {
             cell.textLabel?.text = "No Items Added"
@@ -277,6 +330,26 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
 
         }
+    
+    //MARK: - delete data from swipe
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let itemForDeletion = self.todoItems?[indexPath.row] {
+            
+            super.updateModel(at: indexPath)
+            
+            do {
+                try self.realm.write{
+                    
+                    //realm.delete(item)
+                    self.realm.delete(itemForDeletion)
+                    
+                }
+            } catch {
+                print("Error saving done status, \(error)")
+            }
+    }
+    }
 
 
     
